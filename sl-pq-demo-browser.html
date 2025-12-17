@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+
   <!-- Primary Meta Tags -->
   <title>SmartLedger PQ SDK - Browser Demo</title>
   <meta name="title" content="SmartLedger PQ - Post-Quantum Cryptography SDK" />
   <meta name="description" content="Explore and test SmartLedger's stateless post-quantum cryptographic SDK with interactive key generation, signing, and verification demos. Quantum-resistant security for enterprise and government." />
-  
+
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="SmartLedger PQ - Post-Quantum Cryptography SDK" />
   <meta property="og:description" content="Explore and test SmartLedger's stateless post-quantum cryptographic SDK with interactive key generation, signing, and verification demos. Quantum-resistant security for enterprise and government." />
-  
+
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="SmartLedger PQ - Post-Quantum Cryptography SDK" />
   <meta name="twitter:description" content="Explore and test SmartLedger's stateless post-quantum cryptographic SDK with interactive key generation, signing, and verification demos. Quantum-resistant security for enterprise and government." />
-  
+
   <!-- Additional Meta Tags -->
   <meta name="keywords" content="post-quantum cryptography, SmartLedger, quantum-safe, quantum-resistant, cryptographic SDK, key generation, digital signatures, SLPQ, enterprise security" />
   <meta name="author" content="SmartLedger.Technology" />
@@ -260,7 +260,7 @@
 
   <!-- Load the SDK bundle from CDN -->
   <script src="https://unpkg.com/@smartledger/keys@1.5.1/dist/lumen-keys.min.js"></script>
-  
+
   <script>
     // Global variables
     let sdk = null;
@@ -294,21 +294,21 @@
       const btn = document.getElementById('init-btn');
       btn.disabled = true;
       btn.innerHTML = '<span class="loading"></span> Initializing...';
-      
+
       const output = document.getElementById('init-output');
       output.innerHTML = '';
-      
+
       try {
         log('init-output', 'Creating KeySDK instance...', 'info');
         sdk = await LumenKeys.createKeySDK();
-        
+
         log('init-output', '✅ SDK initialized successfully!', 'success');
         log('init-output', 'Available features:', 'info');
         log('init-output', '  • ECDSA signatures (secp256k1)', 'info');
         log('init-output', '  • ML-DSA signatures (Post-Quantum)', 'info');
         log('init-output', '  • Hybrid signing support', 'info');
         log('init-output', '  • Key lifecycle management', 'info');
-        
+
         // Enable other buttons
         document.getElementById('create-ecdsa-btn').disabled = false;
         document.getElementById('create-mldsa-btn').disabled = false;
@@ -320,7 +320,7 @@
         document.getElementById('verify-algo-ecdsa-btn').disabled = false;
         document.getElementById('verify-algo-mldsa-btn').disabled = false;
         document.getElementById('load-example-btn').disabled = false;
-        
+
         btn.textContent = '✅ Initialized';
         btn.style.background = '#2ecc71';
       } catch (error) {
@@ -331,82 +331,63 @@
     }
 
     async function createECDSAKey() {
-      const output = document.getElementById('keys-output');
       try {
         log('keys-output', 'Creating ECDSA key...', 'info');
-        
+
         const keyRecord = await sdk.createKey('BrowserAgent', {
           primarySignatureSuite: 'bsv-ecdsa-secp256k1'
         });
-        
+
         ecdsaKeyId = keyRecord.meta.keyId;
         stats.keysCreated++;
         updateStats();
-        
+
         log('keys-output', `✅ ECDSA key created!`, 'success');
         log('keys-output', `   Key ID: ${keyRecord.meta.keyId}`, 'info');
         log('keys-output', `   Suite: ${keyRecord.meta.suiteId}`, 'info');
         const hex = Array.from(keyRecord.publicKey.slice(0, 16)).map(b => b.toString(16).padStart(2, '0')).join('');
         log('keys-output', `   Public Key (first 16 bytes): ${hex}...`, 'info');
-        
+
         enableSigningButtons();
       } catch (error) {
         log('keys-output', `❌ Error: ${error.message}`, 'error');
       }
     }
 
+    // ✅ FIXED: missing closing braces + missing catch
     async function createMLDSAKey() {
-      const output = document.getElementById('keys-output');
       try {
         // Get selected variant
         const variantSelect = document.getElementById('ml-dsa-variant');
         const variant = variantSelect ? variantSelect.value : 'ml-dsa-65';
-        
+
         const variantNames = {
           'ml-dsa-44': 'ML-DSA-44 (Level 2, fastest)',
           'ml-dsa-65': 'ML-DSA-65 (Level 3, balanced)',
           'ml-dsa-87': 'ML-DSA-87 (Level 5, maximum security)'
         };
-        
+
         log('keys-output', `Creating ${variantNames[variant]} key...`, 'info');
         log('keys-output', '⏳ Initializing WASM module...', 'info');
-        
+
         const keyRecord = await sdk.createKey('BrowserAgent', {
           primarySignatureSuite: variant
         });
-        
+
         mldsaKeyId = keyRecord.meta.keyId;
         stats.keysCreated++;
         updateStats();
-        
+
         log('keys-output', `✅ ML-DSA key created!`, 'success');
         log('keys-output', `   Key ID: ${keyRecord.meta.keyId}`, 'info');
         log('keys-output', `   Suite: ${keyRecord.meta.suiteId}`, 'info');
         log('keys-output', `   Public Key Size: ${keyRecord.publicKey.length} bytes`, 'info');
         log('keys-output', `   This is QUANTUM-RESISTANT! 🛡️`, 'success');
-        
-      if (ecdsaKeyId || mldsaKeyId) {
-        document.getElementById('sign-verify-btn').disabled = false;
-        document.getElementById('list-keys-btn').disabled = false;
-        document.getElementById('rotate-keys-btn').disabled = false;
-        document.getElementById('profile-btn').disabled = false;
-        document.getElementById('sign-custom-btn').disabled = false;
-        document.getElementById('export-keys-btn').disabled = false;
-        document.getElementById('save-keys-btn').disabled = false;
+
+        enableSigningButtons();
+      } catch (error) {
+        log('keys-output', `❌ Error: ${error.message}`, 'error');
       }
-      if (ecdsaKeyId && mldsaKeyId) {
-        document.getElementById('sign-all-btn').disabled = false;
-      }
-      if (ecdsaKeyId) {
-        document.getElementById('algo-ecdsa-btn').disabled = false;
-      }
-      if (mldsaKeyId) {
-        document.getElementById('algo-mldsa-btn').disabled = false;
-      }
-      if (ecdsaKeyId && mldsaKeyId) {
-        document.getElementById('algo-both-btn').disabled = false;
-      }
-      updateAlgorithmButtons();
     }
 
     // Character counter for custom message
@@ -431,7 +412,7 @@
       const ecdsaBtn = document.getElementById('algo-ecdsa-btn');
       const mldsaBtn = document.getElementById('algo-mldsa-btn');
       const bothBtn = document.getElementById('algo-both-btn');
-      
+
       ecdsaBtn.style.background = selectedAlgorithm === 'ecdsa' ? '#3498db' : '#95a5a6';
       mldsaBtn.style.background = selectedAlgorithm === 'mldsa' ? '#2ecc71' : '#95a5a6';
       bothBtn.style.background = selectedAlgorithm === 'both' ? '#9b59b6' : '#95a5a6';
@@ -441,7 +422,7 @@
       verifyAlgorithm = algo;
       const ecdsaBtn = document.getElementById('verify-algo-ecdsa-btn');
       const mldsaBtn = document.getElementById('verify-algo-mldsa-btn');
-      
+
       ecdsaBtn.style.background = verifyAlgorithm === 'ecdsa' ? '#3498db' : '#95a5a6';
       mldsaBtn.style.background = verifyAlgorithm === 'mldsa' ? '#2ecc71' : '#95a5a6';
     }
@@ -455,7 +436,7 @@
 
       const output = document.getElementById('custom-output');
       output.innerHTML = '';
-      
+
       try {
         const messageBytes = new TextEncoder().encode(message);
         log('custom-output', `📝 Message: "${message}"`, 'info');
@@ -467,15 +448,15 @@
           const startSign = performance.now();
           const signature = await sdk.signWithKey(ecdsaKeyId, messageBytes);
           const signTime = (performance.now() - startSign).toFixed(2);
-          
+
           stats.signaturesCreated++;
           updateStats();
-          
+
           log('custom-output', `✅ ECDSA signature created in ${signTime}ms`, 'success');
           log('custom-output', `   Size: ${signature.length} bytes`, 'info');
           const hex = Array.from(signature.slice(0, 32)).map(b => b.toString(16).padStart(2, '0')).join('');
           log('custom-output', `   Hex: ${hex}...\n`, 'info');
-          
+
           // Verify
           const startVerify = performance.now();
           const isValid = await sdk.verifySignature(ecdsaKeyId, messageBytes, signature);
@@ -491,15 +472,15 @@
           const startSign = performance.now();
           const signature = await sdk.signWithKey(mldsaKeyId, messageBytes);
           const signTime = (performance.now() - startSign).toFixed(2);
-          
+
           stats.signaturesCreated++;
           updateStats();
-          
+
           log('custom-output', `✅ ML-DSA signature created in ${signTime}ms`, 'success');
           log('custom-output', `   Size: ${signature.length} bytes`, 'info');
           const hex = Array.from(signature.slice(0, 32)).map(b => b.toString(16).padStart(2, '0')).join('');
           log('custom-output', `   Hex: ${hex}...\n`, 'info');
-          
+
           // Verify
           const startVerify = performance.now();
           const isValid = await sdk.verifySignature(mldsaKeyId, messageBytes, signature);
@@ -517,7 +498,7 @@
       const output = document.getElementById('export-output');
       output.innerHTML = '';
       exportedKeys = {};
-      
+
       try {
         if (ecdsaKeyId) {
           log('export-output', '📤 Exporting ECDSA public key...', 'info');
@@ -539,7 +520,7 @@
 
         log('export-output', '\n✅ Public keys exported successfully', 'success');
         log('export-output', '💡 These can be shared for signature verification', 'info');
-        
+
         document.getElementById('download-keys-btn').style.display = 'inline-block';
         document.getElementById('download-keys-btn').disabled = false;
       } catch (error) {
@@ -566,7 +547,7 @@
       const message = document.getElementById('verify-message').value;
       const publicKeyHex = document.getElementById('verify-pubkey').value;
       const signatureHex = document.getElementById('verify-signature').value;
-      
+
       if (!message || !publicKeyHex || !signatureHex) {
         alert('Please fill in all fields');
         return;
@@ -574,10 +555,10 @@
 
       const output = document.getElementById('verify-output');
       output.innerHTML = '';
-      
+
       try {
         log('verify-output', '🔍 Starting signature verification...', 'info');
-        
+
         const messageBytes = new TextEncoder().encode(message);
         log('verify-output', `📝 Message: "${message}" (${messageBytes.length} bytes)`, 'info');
 
@@ -606,7 +587,7 @@
 
         log('verify-output', `\n📊 Algorithm: ${verifyAlgorithm.toUpperCase()}`, 'info');
         log('verify-output', `⏱️ Verification time: ${verifyTime}ms`, 'info');
-        
+
       } catch (error) {
         log('verify-output', `❌ Verification error: ${error.message}`, 'error');
       }
@@ -628,10 +609,10 @@
 
     async function saveKeys() {
       if (!sdk) return;
-      
+
       const output = document.getElementById('storage-output');
       output.innerHTML = '';
-      
+
       try {
         const keysToStore = [];
 
@@ -664,7 +645,7 @@
         localStorage.setItem(STORAGE_KEY, JSON.stringify(keysToStore));
         log('storage-output', `\n✅ Saved ${keysToStore.length} key(s) to browser storage`, 'success');
         log('storage-output', '💡 Keys persist across page refreshes', 'info');
-        
+
         loadStorage();
       } catch (error) {
         log('storage-output', `❌ Error: ${error.message}`, 'error');
@@ -675,12 +656,12 @@
       try {
         const stored = localStorage.getItem(STORAGE_KEY);
         let keys = [];
-        
+
         if (stored) {
           keys = JSON.parse(stored);
           document.getElementById('storage-output').innerHTML = '';
           log('storage-output', `📂 Loaded ${keys.length} key(s) from browser storage`, 'success');
-          
+
           keys.forEach((key, index) => {
             log('storage-output', `\n${index + 1}. ${key.algorithm}`, 'info');
             log('storage-output', `   ID: ${key.id}`, 'info');
@@ -691,13 +672,13 @@
           document.getElementById('storage-output').innerHTML = '';
           log('storage-output', '📂 No keys found in storage', 'info');
         }
-        
+
         document.getElementById('stored-keys-count').textContent = keys.length;
-        
+
         const bytes = stored ? new Blob([stored]).size : 0;
         const sizeText = bytes < 1024 ? `${bytes} bytes` : `${(bytes / 1024).toFixed(2)} KB`;
         document.getElementById('storage-size').textContent = sizeText;
-        
+
         document.getElementById('clear-storage-btn').disabled = keys.length === 0;
       } catch (error) {
         log('storage-output', `❌ Error loading keys: ${error.message}`, 'error');
@@ -711,56 +692,63 @@
       loadStorage();
     }
 
-    function enableSigningButtons() {
-        enableSigningButtons();
-      } catch (error) {
-        log('keys-output', `❌ Error: ${error.message}`, 'error');
-      }
-    }
-
+    // ✅ FIXED: removed stray extra "}" that was here in your original
     function enableSigningButtons() {
       if (ecdsaKeyId || mldsaKeyId) {
         document.getElementById('sign-verify-btn').disabled = false;
         document.getElementById('list-keys-btn').disabled = false;
         document.getElementById('rotate-keys-btn').disabled = false;
         document.getElementById('profile-btn').disabled = false;
+        document.getElementById('sign-custom-btn').disabled = false;
+        document.getElementById('export-keys-btn').disabled = false;
+        document.getElementById('save-keys-btn').disabled = false;
       }
       if (ecdsaKeyId && mldsaKeyId) {
         document.getElementById('sign-all-btn').disabled = false;
       }
+      if (ecdsaKeyId) {
+        document.getElementById('algo-ecdsa-btn').disabled = false;
+      }
+      if (mldsaKeyId) {
+        document.getElementById('algo-mldsa-btn').disabled = false;
+      }
+      if (ecdsaKeyId && mldsaKeyId) {
+        document.getElementById('algo-both-btn').disabled = false;
+      }
+      updateAlgorithmButtons();
     }
 
     async function signAndVerify() {
       const output = document.getElementById('sign-output');
       output.innerHTML = '';
-      
+
       try {
         const keyId = ecdsaKeyId || mldsaKeyId;
         const message = new TextEncoder().encode('Hello from the browser! 🌐');
-        
+
         log('sign-output', `Signing message with key ${keyId}...`, 'info');
-        
+
         const startSign = performance.now();
         const signature = await sdk.signWithKey(keyId, message);
         const signTime = (performance.now() - startSign).toFixed(2);
-        
+
         stats.signaturesCreated++;
         updateStats();
-        
+
         log('sign-output', `✅ Signature created in ${signTime}ms`, 'success');
         log('sign-output', `   Signature size: ${signature.length} bytes`, 'info');
         const hex = Array.from(signature.slice(0, 32)).map(b => b.toString(16).padStart(2, '0')).join('');
         log('sign-output', `   Signature (first 32 bytes hex): ${hex}...`, 'info');
-        
+
         log('sign-output', '\nVerifying signature...', 'info');
-        
+
         const startVerify = performance.now();
         const isValid = await sdk.verifySignature(keyId, message, signature);
         const verifyTime = (performance.now() - startVerify).toFixed(2);
-        
+
         stats.verifications++;
         updateStats();
-        
+
         if (isValid) {
           log('sign-output', `✅ Signature verified in ${verifyTime}ms`, 'success');
         } else {
@@ -774,36 +762,36 @@
     async function signWithBoth() {
       const output = document.getElementById('sign-output');
       output.innerHTML = '';
-      
+
       try {
         const message = new TextEncoder().encode('Hybrid signature test message');
-        
+
         log('sign-output', 'Creating signatures with both algorithms...', 'info');
-        
+
         // ECDSA
         log('sign-output', '\n📝 ECDSA Signing...', 'info');
         const ecdsaStart = performance.now();
         const ecdsaSig = await sdk.signWithKey(ecdsaKeyId, message);
         const ecdsaTime = (performance.now() - ecdsaStart).toFixed(2);
         stats.signaturesCreated++;
-        
+
         log('sign-output', `✅ ECDSA: ${ecdsaTime}ms, ${ecdsaSig.length} bytes`, 'success');
-        
+
         // ML-DSA
         log('sign-output', '\n📝 ML-DSA Signing...', 'info');
         const mldsaStart = performance.now();
         const mldsaSig = await sdk.signWithKey(mldsaKeyId, message);
         const mldsaTime = (performance.now() - mldsaStart).toFixed(2);
         stats.signaturesCreated++;
-        
+
         log('sign-output', `✅ ML-DSA: ${mldsaTime}ms, ${mldsaSig.length} bytes`, 'success');
-        
+
         // Compare
         log('sign-output', '\n📊 Comparison:', 'info');
         log('sign-output', `   ECDSA: ${ecdsaTime}ms, ${ecdsaSig.length} bytes`, 'info');
         log('sign-output', `   ML-DSA: ${mldsaTime}ms, ${mldsaSig.length} bytes`, 'info');
         log('sign-output', `   Size ratio: ${(mldsaSig.length / ecdsaSig.length).toFixed(2)}x`, 'info');
-        
+
         updateStats();
       } catch (error) {
         log('sign-output', `❌ Error: ${error.message}`, 'error');
@@ -813,14 +801,14 @@
     async function listKeys() {
       const output = document.getElementById('mgmt-output');
       output.innerHTML = '';
-      
+
       try {
         log('mgmt-output', 'Listing keys for BrowserAgent...', 'info');
-        
+
         const keys = await sdk.listKeysForAgent('BrowserAgent');
-        
+
         log('mgmt-output', `\n✅ Found ${keys.length} key(s):`, 'success');
-        
+
         keys.forEach((key, index) => {
           log('mgmt-output', `\n${index + 1}. ${key.meta.keyId}`, 'info');
           log('mgmt-output', `   Suite: ${key.meta.suiteId}`, 'info');
@@ -836,13 +824,13 @@
     async function rotateKeys() {
       const output = document.getElementById('mgmt-output');
       output.innerHTML = '';
-      
+
       try {
         log('mgmt-output', 'Rotating keys for BrowserAgent...', 'info');
         log('mgmt-output', 'Creating new keys...', 'info');
-        
+
         const newKeys = [];
-        
+
         if (ecdsaKeyId) {
           const newEcdsa = await sdk.createKey('BrowserAgent', {
             primarySignatureSuite: 'bsv-ecdsa-secp256k1'
@@ -851,7 +839,7 @@
           ecdsaKeyId = newEcdsa.meta.keyId;
           stats.keysCreated++;
         }
-        
+
         if (mldsaKeyId) {
           const newMldsa = await sdk.createKey('BrowserAgent', {
             primarySignatureSuite: 'ml-dsa-65'
@@ -860,16 +848,16 @@
           mldsaKeyId = newMldsa.meta.keyId;
           stats.keysCreated++;
         }
-        
+
         updateStats();
-        
+
         log('mgmt-output', `\n✅ Created ${newKeys.length} new key(s):`, 'success');
-        
+
         newKeys.forEach((key, index) => {
           log('mgmt-output', `\n${index + 1}. ${key.meta.keyId}`, 'info');
           log('mgmt-output', `   Suite: ${key.meta.suiteId}`, 'info');
         });
-        
+
         log('mgmt-output', '\n✅ Keys rotated successfully', 'success');
       } catch (error) {
         log('mgmt-output', `❌ Error: ${error.message}`, 'error');
@@ -879,19 +867,19 @@
     async function getProfile() {
       const output = document.getElementById('mgmt-output');
       output.innerHTML = '';
-      
+
       try {
         log('mgmt-output', 'Getting key profile...', 'info');
-        
+
         const keys = await sdk.listKeysForAgent('BrowserAgent', true);
         const activeKeys = keys.filter(k => k.meta.status === 'active');
-        
+
         log('mgmt-output', '\n✅ Active Keys Profile:', 'success');
         log('mgmt-output', `   Total active keys: ${activeKeys.length}`, 'info');
-        
+
         const hasEcdsa = activeKeys.some(k => k.meta.suiteId === 'bsv-ecdsa-secp256k1');
         const hasMldsa = activeKeys.some(k => k.meta.suiteId === 'ml-dsa-65');
-        
+
         if (hasEcdsa && hasMldsa) {
           log('mgmt-output', '\n🛡️ Hybrid mode: Maximum security!', 'success');
           log('mgmt-output', '   • Classical ECDSA for current compatibility', 'info');
@@ -913,33 +901,33 @@
       output.innerHTML = '';
       const btn = document.getElementById('perf-test-btn');
       btn.disabled = true;
-      
+
       try {
         log('perf-output', '🏃 Running performance test...', 'info');
         log('perf-output', 'Testing 10 key creations and 100 sign/verify operations\n', 'info');
-        
+
         const message = new TextEncoder().encode('Performance test message');
         const iterations = 100;
-        
+
         // Test ECDSA
         log('perf-output', '📊 ECDSA Performance:', 'info');
-        
+
         const ecdsaKeyStart = performance.now();
         for (let i = 0; i < 10; i++) {
           await sdk.createKey(`PerfAgent${i}`, { primarySignatureSuite: 'bsv-ecdsa-secp256k1' });
         }
         const ecdsaKeyTime = (performance.now() - ecdsaKeyStart).toFixed(2);
         log('perf-output', `   Key creation (10x): ${ecdsaKeyTime}ms (${(ecdsaKeyTime / 10).toFixed(2)}ms avg)`, 'info');
-        
+
         const testKey = await sdk.createKey('PerfTest', { primarySignatureSuite: 'bsv-ecdsa-secp256k1' });
-        
+
         const ecdsaSignStart = performance.now();
         for (let i = 0; i < iterations; i++) {
           await sdk.signWithKey(testKey.meta.keyId, message);
         }
         const ecdsaSignTime = (performance.now() - ecdsaSignStart).toFixed(2);
         log('perf-output', `   Signing (${iterations}x): ${ecdsaSignTime}ms (${(ecdsaSignTime / iterations).toFixed(2)}ms avg)`, 'info');
-        
+
         const sig = await sdk.signWithKey(testKey.meta.keyId, message);
         const ecdsaVerifyStart = performance.now();
         for (let i = 0; i < iterations; i++) {
@@ -947,12 +935,12 @@
         }
         const ecdsaVerifyTime = (performance.now() - ecdsaVerifyStart).toFixed(2);
         log('perf-output', `   Verification (${iterations}x): ${ecdsaVerifyTime}ms (${(ecdsaVerifyTime / iterations).toFixed(2)}ms avg)`, 'success');
-        
+
         log('perf-output', '\n✅ Performance test complete!', 'success');
         log('perf-output', `\n💡 Throughput:`, 'info');
         log('perf-output', `   • ${(iterations * 1000 / ecdsaSignTime).toFixed(0)} signatures/sec`, 'info');
         log('perf-output', `   • ${(iterations * 1000 / ecdsaVerifyTime).toFixed(0)} verifications/sec`, 'info');
-        
+
         btn.disabled = false;
       } catch (error) {
         log('perf-output', `❌ Error: ${error.message}`, 'error');
