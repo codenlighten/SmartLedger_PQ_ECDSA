@@ -7,21 +7,21 @@
 [![React](https://img.shields.io/badge/React-18.3-61dafb)](https://reactjs.org/)
 [![Vite](https://img.shields.io/badge/Vite-5.4-646cff)](https://vitejs.dev/)
 
-> **Enterprise-grade Post-Quantum Cryptography SDK** - Interactive browser demonstration of SmartLedger's quantum-resistant cryptographic capabilities with ECDSA and ML-DSA (Post-Quantum) signatures.
+> **Post-quantum (ML-DSA) and ECDSA signing SDK** - Interactive browser demonstration of SmartLedger's ECDSA and ML-DSA (FIPS 204) signing.
 
 ## 🌟 Overview
 
-SmartLedger PQ SDK provides a complete, browser-based demonstration of cutting-edge cryptographic capabilities, featuring both classical ECDSA and post-quantum ML-DSA signature algorithms. This interactive demo showcases the SDK's powerful features for enterprise and government applications requiring quantum-resistant security.
+SmartLedger PQ SDK provides a browser-based demonstration of both classical ECDSA and post-quantum ML-DSA signature algorithms.
 
 ### ✨ Key Features
 
 - 🔑 **Dual Algorithm Support** - Classical ECDSA (secp256k1) and Post-Quantum ML-DSA signatures
-- 🛡️ **Quantum-Resistant Security** - Future-proof cryptography against quantum computing threats
+- 🛡️ **Post-quantum signatures** - ML-DSA (NIST FIPS 204) alongside ECDSA
 - 🌐 **100% Browser-Based** - No backend required, runs entirely client-side
 - ⚡ **High Performance** - Optimized for speed with WASM acceleration
 - 🔐 **Complete Cryptographic Workflow** - Key generation, signing, verification, and management
 - 📦 **Lightweight** - Only 230.5 KB minified bundle
-- 🎯 **Production Ready** - Enterprise-grade code quality and security
+- 🎯 **Status** - Interactive demonstration (experimental)
 
 ## 🚀 Live Demo
 
