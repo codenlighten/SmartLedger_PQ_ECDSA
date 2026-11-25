@@ -1,5 +1,7 @@
 # 🔐 SmartLedger PQ SDK - Interactive Demo
 
+> **Status: experimental.** Claims in this README about scale, speed, security or readiness are design goals or earlier drafts unless they point to a test, measurement or audit report. No independent audit is claimed.
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18.3-61dafb)](https://reactjs.org/)
