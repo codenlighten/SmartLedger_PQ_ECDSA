@@ -223,7 +223,7 @@ const hexKey = Array.from(publicKey)
 
 ## 🔒 Security Features
 
-- **Quantum-Resistant Algorithms** - ML-DSA based on NIST FIPS 204
+- **Post-quantum algorithm** - ML-DSA (NIST FIPS 204)
 - **Classical Compatibility** - ECDSA secp256k1 for current standards
 - **Hybrid Signatures** - Dual-algorithm signing for maximum security
 - **Browser Isolation** - All cryptographic operations run client-side
@@ -255,8 +255,8 @@ Requires WebAssembly support and modern JavaScript (ES2020+).
 
 ## 🤝 Use Cases
 
-- **Enterprise Security** - Quantum-resistant document signing
-- **Government Applications** - Future-proof identity management
+- **Document signing** - ML-DSA signatures
+- **Identity management** (potential use case)
 - **Blockchain Integration** - Dual-algorithm transaction signing
 - **Digital Signatures** - Legal document authentication
 - **IoT Security** - Lightweight cryptographic operations
@@ -271,20 +271,19 @@ For complete SDK documentation, visit:
 
 ## 🏢 About SmartLedger
 
-SmartLedger.Technology is a leader in blockchain and distributed ledger solutions, providing enterprise-grade security and scalability for government and commercial applications. Our quantum-resistant cryptography solutions ensure your systems remain secure in the post-quantum era.
+SmartLedger.Technology works on blockchain and distributed-ledger software. See https://smartledger.technology.
 
 ### Key Solutions:
-- 🛡️ **Sovereign Shield** - Military-grade cybersecurity
+- 🛡️ **Sovereign Shield** - cybersecurity product
 - 🔐 **CERTIHASH Sentinel Node** - AI-enhanced blockchain security
 - 🆔 **SmartLedger Identity** - Self-sovereign digital identity (W3C DID compliant)
-- 💰 **SmartLedger Interchange** - Revolutionary micropayments platform
+- 💰 **SmartLedger Interchange** - Micropayments platform
 - 📊 **Data Integrity Solutions** - Immutable audit trails
 
 ### Certifications & Compliance:
 - ✅ USFCR Verified Vendor
 - ✅ NIST Compliance
 - ✅ W3C DID Standards
-- ✅ Enterprise Security Certified
 
 ## 🚀 Deployment
 
@@ -337,7 +336,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Built with ❤️ by SmartLedger.Technology**
 
-*Securing the future with quantum-resistant cryptography*
+*Post-quantum signing demo*
 
 [Website](https://smartledger.technology) • [Documentation](https://smartledger.technology) • [Contact](mailto:YourFriends@smartledger.solutions)
 
